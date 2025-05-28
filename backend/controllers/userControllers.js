@@ -4,6 +4,7 @@ import { generateToken } from "../config/generateToken.js";
 
 
 const registerUser= expressAsyncHandler(async (req,res)=>{
+  //frontend se ayega 
     const {name ,email, password, picture} = req.body
     if(!name.trim() || !email.trim() || !password){
     res.status(400);

@@ -1,7 +1,9 @@
 import React,{useState} from 'react'
 import { VStack ,FormControl, FormLabel,Input, InputGroup, InputRightAddon, InputRightElement,Button} from '@chakra-ui/react'
 import { useToast } from '@chakra-ui/react'
+import { useHistory } from 'react-router-dom'
 
+import axios from 'axios'
 
 const SignUp = () => {
       const [name, setName] = useState();
@@ -12,6 +14,7 @@ const SignUp = () => {
  ;
 const [showPassword, setShowPassword] = useState(false);
 const [picLoading,setPicLoading] =useState(false);
+const history= useHistory();
 const toast = useToast()
 
 
@@ -75,7 +78,70 @@ toast({
 }
 
 const submitHandler =async ()=>{
-  
+setPicLoading(true);
+if(!name || !email || !password || !confirmpassword){
+  toast({
+        title: "Please Fill all the Feilds",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+
+}
+if(password !== confirmpassword){
+  toast({
+        title: "Passwords do not match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+
+}
+
+try{
+  //json mein bhejne ke liye 
+  const config = {
+    headers: {
+   "Content-type": "application/json",
+  },
+  };
+//backend ko jayega 
+
+  const {data} =await axios.post("/api/user", {name,email,password,picture},config);
+
+  toast({
+    title: "Registration Successful",
+    status: "success",
+    duration: 5000,
+    isClosable: true,
+    position: "bottom",
+    
+  });
+
+  localStorage.setItem("userInfo", JSON.stringify(data));
+  setPicLoading(false);
+  history.push("/chats");
+}
+catch(error){
+  toast({
+        title: "Error Occured",
+        description: "Failed to register",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+      setPicLoading(false);
+      return;
+
+
+}
 
 }
 const handlePasswordDisplay = () => setShowPassword(!showPassword);
