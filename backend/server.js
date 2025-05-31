@@ -5,7 +5,7 @@ import cors from "cors"
 import connectDB from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
 import {notFound, errorHandler} from "./middleware/errorMiddleware.js"
-
+import chatRoutes from "./routes/chatRoutes.js"
 dotenv.config({ path: './backend/.env' });
 const app = express();
 
@@ -14,19 +14,8 @@ app.use(express.json()); //to accept json data
 app.use(cors());
 connectDB();
 
-app.get("/api/chats",(req,res)=>{
+app.use("/api/chats", chatRoutes)
 
-    res.json(chats);
-})
-
-app.get("/api/chats/:id",(req,res)=>{
-    
-    const singleChat=chats.find((c)=>
-         c._id === req.params.id
-    )
-
-    res.json(singleChat);
-})
 
 app.use('/api/user',userRoutes)
 
